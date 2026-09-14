@@ -1,153 +1,141 @@
 import { useState, useEffect, useRef } from 'react'
-import '../styles/games/ReactionGame.css'
 import GameResults from '../components/GameResults'
+import '../styles/games/ReactionGame.css'
 
-function ReactionGame({ settings, onGameEnd, onExit }) {
-  const [gameState, setGameState] = useState('countdown') // countdown, playing, ended
-  const [countdown, setCountdown] = useState(3)
+const ReactionGame = ({ onExit }) => {
+  const [gameState, setGameState] = useState('countdown') // countdown, playing, finished
+  const [round, setRound] = useState(1)
+  const [countdownValue, setCountdownValue] = useState(3)
+  const [targetPosition, setTargetPosition] = useState(null)
   const [targetVisible, setTargetVisible] = useState(false)
-  const [targetPos, setTargetPos] = useState({ x: 0, y: 0 })
+  const [waitTime, setWaitTime] = useState(0)
   const [reactionTimes, setReactionTimes] = useState([])
-  const [currentRound, setCurrentRound] = useState(1)
-  const [totalRounds, setTotalRounds] = useState(10)
   const gameAreaRef = useRef(null)
-  const targetTimerRef = useRef(null)
-  const countdownTimerRef = useRef(null)
-  const startTimeRef = useRef(null)
+  const countdownTimeRef = useRef(Date.now())
+  const targetTimeRef = useRef(null)
+  const countdownIntervalRef = useRef(null)
+  const targetTimeoutRef = useRef(null)
 
-  // Countdown before game starts
+  // Initial countdown
   useEffect(() => {
     if (gameState === 'countdown') {
-      countdownTimerRef.current = setInterval(() => {
-        setCountdown((prev) => prev - 1)
-      }, 1000)
+      if (countdownValue > 0) {
+        countdownIntervalRef.current = setTimeout(() => {
+          setCountdownValue(prev => prev - 1)
+        }, 1000)
+      } else {
+        setGameState('playing')
+        showNextTarget()
+      }
     }
-    return () => clearInterval(countdownTimerRef.current)
-  }, [gameState])
-
-  // Start game when countdown reaches 0
-  useEffect(() => {
-    if (countdown === 0 && gameState === 'countdown') {
-      setGameState('playing')
-      showNextTarget()
-    }
-  }, [countdown, gameState])
-
-  const getRandomPosition = () => {
-    if (!gameAreaRef.current) return { x: 0, y: 0 }
-    const rect = gameAreaRef.current.getBoundingClientRect()
-    const targetSize = settings.targetSize || 30
-    const maxX = rect.width - targetSize
-    const maxY = rect.height - targetSize
-    return {
-      x: Math.random() * maxX,
-      y: Math.random() * maxY
-    }
-  }
+    return () => clearTimeout(countdownIntervalRef.current)
+  }, [countdownValue, gameState])
 
   const showNextTarget = () => {
+    if (!gameAreaRef.current) return
+
+    const rect = gameAreaRef.current.getBoundingClientRect()
+    const minDist = 80
+    
+    let x, y, valid
+    do {
+      valid = true
+      x = Math.random() * (rect.width - 100) + 50
+      y = Math.random() * (rect.height - 100) + 50
+      
+      if (targetPosition) {
+        const dist = Math.sqrt((x - targetPosition.x) ** 2 + (y - targetPosition.y) ** 2)
+        if (dist < minDist) valid = false
+      }
+    } while (!valid)
+
+    setTargetPosition({ x, y })
     setTargetVisible(true)
-    setTargetPos(getRandomPosition())
-    startTimeRef.current = Date.now()
+    targetTimeRef.current = Date.now()
+    
+    const randomWait = Math.random() * 2000 + 1000 // 1-3 seconds
+    setWaitTime(Math.round(randomWait))
+
+    if (Math.random() > 0.8) {
+      // 20% chance of early click (false start)
+      targetTimeoutRef.current = setTimeout(() => {
+        setTargetVisible(false)
+      }, randomWait)
+    }
   }
 
   const handleTargetClick = () => {
-    if (!targetVisible) return
+    if (!targetVisible || gameState !== 'playing') return
 
-    const reactionTime = Date.now() - startTimeRef.current
-    const newTimes = [...reactionTimes, reactionTime]
-    setReactionTimes(newTimes)
+    const reactionTime = Date.now() - targetTimeRef.current
+    setReactionTimes([...reactionTimes, reactionTime])
     setTargetVisible(false)
+    clearTimeout(targetTimeoutRef.current)
 
-    // Play sound effect
-    if (settings.soundEnabled) {
-      playSound('success')
-    }
-
-    if (newTimes.length < totalRounds) {
-      setCurrentRound(newTimes.length + 1)
-      targetTimerRef.current = setTimeout(() => {
-        showNextTarget()
-      }, 500)
+    if (round < 10) {
+      setTimeout(() => {
+        setRound(round + 1)
+        setTimeout(showNextTarget, 500)
+      }, 300)
     } else {
-      setGameState('ended')
+      setGameState('finished')
     }
   }
 
-  const playSound = (type) => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    const oscillator = audioContext.createOscillator()
-    const gain = audioContext.createGain()
-    oscillator.connect(gain)
-    gain.connect(audioContext.destination)
-
-    if (type === 'success') {
-      oscillator.frequency.value = 800
-      gain.gain.setValueAtTime(0.3, audioContext.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
-      oscillator.start(audioContext.currentTime)
-      oscillator.stop(audioContext.currentTime + 0.1)
-    }
-  }
-
-  if (gameState === 'ended') {
-    const avgReactionTime = reactionTimes.length > 0
-      ? Math.round(reactionTimes.reduce((a, b) => a + b) / reactionTimes.length)
-      : 0
-
+  if (gameState === 'finished') {
+    const avgReaction = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length)
     const stats = {
-      mode: 'reaction',
-      score: Math.max(0, 1000 - avgReactionTime),
-      avgReactionTime,
-      hits: reactionTimes.length,
-      timestamp: new Date().toISOString()
+      mode: 'REACTION',
+      score: avgReaction,
+      scoreLabel: 'Average Reaction Time',
+      metrics: [
+        { label: 'Rounds Completed', value: 10 },
+        { label: 'Avg Reaction Time', value: `${avgReaction}ms` },
+        { label: 'Best Time', value: `${Math.min(...reactionTimes)}ms` },
+        { label: 'Worst Time', value: `${Math.max(...reactionTimes)}ms` },
+      ]
     }
-
-    return (
-      <GameResults
-        stats={stats}
-        onExit={onExit}
-        onGameEnd={onGameEnd}
-      />
-    )
+    return <GameResults stats={stats} onPlayAgain={() => window.location.reload()} onExit={onExit} />
   }
 
   return (
     <div className="reaction-game">
       <div className="game-header">
-        <h2>REACTION TEST</h2>
+        <h2>⚡ REACTION TEST</h2>
         <button className="exit-btn" onClick={onExit}>✕</button>
       </div>
 
-      {gameState === 'countdown' && (
-        <div className="countdown-overlay">
-          <div className="countdown-number">{countdown === 0 ? 'GO!' : countdown}</div>
-        </div>
-      )}
-
       <div className="game-stats">
-        <div className="stat">Round: {currentRound}/{totalRounds}</div>
-        <div className="stat">Avg Time: {reactionTimes.length > 0 ? Math.round(reactionTimes.reduce((a, b) => a + b) / reactionTimes.length) : 0}ms</div>
+        <div className="stat">Round: {round}/10</div>
+        <div className="stat">State: {gameState === 'countdown' ? 'Ready...' : 'Playing'}</div>
       </div>
 
       <div className="game-area" ref={gameAreaRef}>
+        {gameState === 'countdown' && (
+          <div className="countdown-overlay">
+            <div className="countdown-number">{countdownValue > 0 ? countdownValue : 'GO!'}</div>
+          </div>
+        )}
+
         {targetVisible && (
           <div
             className="target reaction-target"
-            style={{
-              left: `${targetPos.x}px`,
-              top: `${targetPos.y}px`,
-              width: `${settings.targetSize || 30}px`,
-              height: `${settings.targetSize || 30}px`
-            }}
             onClick={handleTargetClick}
+            style={{
+              width: '50px',
+              height: '50px',
+              left: `${targetPosition.x}px`,
+              top: `${targetPosition.y}px`,
+            }}
           >
             <div className="target-pulse"></div>
           </div>
         )}
       </div>
 
-      <p className="instruction">Click the target as fast as possible!</p>
+      <div className="instruction">
+        Click on targets as fast as you can. Measure your reaction time!
+      </div>
     </div>
   )
 }

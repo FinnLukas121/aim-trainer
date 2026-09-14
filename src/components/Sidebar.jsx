@@ -1,43 +1,41 @@
-import { useState } from 'react'
-import '../styles/Sidebar.css'
+import './Sidebar.css'
 
-function Sidebar({ currentPage, setCurrentPage }) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-
-  const menuItems = [
-    { id: 'home', label: 'HOME', icon: '🎮' },
-    { id: 'play', label: 'PLAY', icon: '▶️' },
-    { id: 'training', label: 'TRAINING', icon: '⚡' },
-    { id: 'stats', label: 'STATS', icon: '📊' },
-    { id: 'settings', label: 'SETTINGS', icon: '⚙️' }
+const Sidebar = ({ currentPage, onNavigate, isOpen, onToggle }) => {
+  const navItems = [
+    { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'play', label: 'Play', icon: '🎮' },
+    { id: 'training', label: 'Training', icon: '📚' },
+    { id: 'stats', label: 'Stats', icon: '📊' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' },
   ]
 
   return (
-    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+    <aside className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
           <span className="logo-icon">🎯</span>
-          {!isCollapsed && <span className="logo-text">AIM TRAINER</span>}
+          <span className="logo-text">AIMTRAINER</span>
         </div>
-        <button className="collapse-btn" onClick={() => setIsCollapsed(!isCollapsed)}>
-          {isCollapsed ? '→' : '←'}
+        <button className="collapse-btn" onClick={onToggle}>
+          {isOpen ? '←' : '→'}
         </button>
       </div>
+
       <nav className="sidebar-nav">
-        {menuItems.map((item) => (
+        {navItems.map(item => (
           <button
             key={item.id}
             className={`nav-item ${currentPage === item.id ? 'active' : ''}`}
-            onClick={() => setCurrentPage(item.id)}
-            title={item.label}
+            onClick={() => onNavigate(item.id)}
           >
             <span className="nav-icon">{item.icon}</span>
-            {!isCollapsed && <span className="nav-label">{item.label}</span>}
+            <span className="nav-label">{item.label}</span>
           </button>
         ))}
       </nav>
+
       <div className="sidebar-footer">
-        {!isCollapsed && <p className="version">v1.0.0</p>}
+        <div className="version">v1.0.0</div>
       </div>
     </aside>
   )

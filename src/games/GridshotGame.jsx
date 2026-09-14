@@ -1,187 +1,115 @@
 import { useState, useEffect, useRef } from 'react'
-import '../styles/games/GridshotGame.css'
 import GameResults from '../components/GameResults'
+import '../styles/games/GridshotGame.css'
 
-function GridshotGame({ settings, onGameEnd, onExit }) {
+const GridshotGame = ({ onExit }) => {
   const [gameState, setGameState] = useState('countdown')
-  const [countdown, setCountdown] = useState(3)
-  const [gridTargets, setGridTargets] = useState([])
+  const [countdownValue, setCountdownValue] = useState(3)
+  const [nextNumber, setNextNumber] = useState(1)
   const [hits, setHits] = useState(0)
-  const [misses, setMisses] = useState(0)
-  const [score, setScore] = useState(0)
-  const [timeElapsed, setTimeElapsed] = useState(0)
-  const [timeLimit, setTimeLimit] = useState(30)
-  const countdownTimerRef = useRef(null)
+  const [startTime, setStartTime] = useState(null)
+  const [elapsedTime, setElapsedTime] = useState(0)
   const gameTimerRef = useRef(null)
-  const startTimeRef = useRef(null)
+  const countdownIntervalRef = useRef(null)
   const gridRef = useRef(null)
-  const trainingDuration = settings.trainingDuration || 30
-  const GRID_SIZE = 4
 
+  // Countdown phase
   useEffect(() => {
     if (gameState === 'countdown') {
-      countdownTimerRef.current = setInterval(() => {
-        setCountdown((prev) => prev - 1)
-      }, 1000)
+      if (countdownValue > 0) {
+        countdownIntervalRef.current = setTimeout(() => {
+          setCountdownValue(prev => prev - 1)
+        }, 1000)
+      } else {
+        setGameState('playing')
+        setStartTime(Date.now())
+      }
     }
-    return () => clearInterval(countdownTimerRef.current)
-  }, [gameState])
+    return () => clearTimeout(countdownIntervalRef.current)
+  }, [countdownValue, gameState])
 
+  // Elapsed time tracker
   useEffect(() => {
-    if (countdown === 0 && gameState === 'countdown') {
-      setGameState('playing')
-      startTimeRef.current = Date.now()
-      initializeGrid()
-    }
-  }, [countdown, gameState])
-
-  useEffect(() => {
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && startTime) {
       gameTimerRef.current = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000)
-        setTimeElapsed(elapsed)
-        if (elapsed >= trainingDuration) {
-          setGameState('ended')
-        }
+        setElapsedTime(Math.round((Date.now() - startTime) / 100) / 10)
       }, 100)
     }
     return () => clearInterval(gameTimerRef.current)
-  }, [gameState, trainingDuration])
+  }, [gameState, startTime])
 
-  const initializeGrid = () => {
-    const targets = []
-    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-      targets.push({
-        id: i,
-        row: Math.floor(i / GRID_SIZE),
-        col: i % GRID_SIZE,
-        hit: false
-      })
+  // Check if game is complete
+  useEffect(() => {
+    if (hits === 16 && gameState === 'playing') {
+      setGameState('finished')
     }
-    // Randomize order
-    targets.sort(() => Math.random() - 0.5)
-    setGridTargets(targets)
-  }
+  }, [hits, gameState])
 
-  const handleTargetClick = (targetId) => {
-    const target = gridTargets.find((t) => t.id === targetId)
-    if (!target || target.hit) return
+  const handleCellClick = (cellNumber) => {
+    if (gameState !== 'playing') return
 
-    // Check if it's the next target to hit (in order)
-    const hitCount = gridTargets.filter((t) => t.hit).length
-    if (gridTargets[hitCount].id !== targetId) {
-      setMisses(misses + 1)
-      if (settings.soundEnabled) {
-        playSound('miss')
+    if (cellNumber === nextNumber) {
+      setHits(hits + 1)
+      if (nextNumber < 16) {
+        setNextNumber(nextNumber + 1)
       }
-      return
-    }
-
-    setGridTargets((prev) =>
-      prev.map((t) => (t.id === targetId ? { ...t, hit: true } : t))
-    )
-    setHits(hits + 1)
-    setScore(score + 20)
-
-    if (settings.soundEnabled) {
-      playSound('success')
-    }
-
-    // Check if all targets are hit
-    if (hits + 1 === GRID_SIZE * GRID_SIZE) {
-      setGameState('ended')
     }
   }
 
-  const playSound = (type) => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    const oscillator = audioContext.createOscillator()
-    const gain = audioContext.createGain()
-    oscillator.connect(gain)
-    gain.connect(audioContext.destination)
-
-    if (type === 'success') {
-      oscillator.frequency.value = 1000
-      gain.gain.setValueAtTime(0.3, audioContext.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
-      oscillator.start(audioContext.currentTime)
-      oscillator.stop(audioContext.currentTime + 0.1)
-    } else if (type === 'miss') {
-      oscillator.frequency.value = 200
-      gain.gain.setValueAtTime(0.2, audioContext.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
-      oscillator.start(audioContext.currentTime)
-      oscillator.stop(audioContext.currentTime + 0.2)
-    }
-  }
-
-  if (gameState === 'ended') {
-    const completionTime = timeElapsed
-    const accuracy = hits + misses > 0 ? Math.round((hits / (hits + misses)) * 100) : 0
+  if (gameState === 'finished') {
     const stats = {
-      mode: 'gridshot',
-      score,
-      hits,
-      misses,
-      accuracy,
-      completionTime,
-      timestamp: new Date().toISOString()
+      mode: 'GRIDSHOT',
+      score: elapsedTime,
+      scoreLabel: 'Completion Time',
+      metrics: [
+        { label: 'Cells Clicked', value: '16/16' },
+        { label: 'Completion Time', value: `${elapsedTime}s` },
+        { label: 'Accuracy', value: '100%' },
+        { label: 'Avg Time/Cell', value: `${(elapsedTime / 16).toFixed(2)}s` },
+      ]
     }
-
-    return (
-      <GameResults
-        stats={stats}
-        onExit={onExit}
-        onGameEnd={onGameEnd}
-      />
-    )
+    return <GameResults stats={stats} onPlayAgain={() => window.location.reload()} onExit={onExit} />
   }
-
-  const accuracy = hits + misses > 0 ? Math.round((hits / (hits + misses)) * 100) : 0
-  const nextTargetIndex = gridTargets.filter((t) => t.hit).length
-  const totalTargets = GRID_SIZE * GRID_SIZE
 
   return (
     <div className="gridshot-game">
       <div className="game-header">
-        <h2>GRIDSHOT</h2>
+        <h2>📊 GRIDSHOT</h2>
         <button className="exit-btn" onClick={onExit}>✕</button>
       </div>
 
-      {gameState === 'countdown' && (
-        <div className="countdown-overlay">
-          <div className="countdown-number">{countdown === 0 ? 'GO!' : countdown}</div>
-        </div>
-      )}
-
       <div className="game-stats">
-        <div className="stat">Progress: {nextTargetIndex}/{totalTargets}</div>
-        <div className="stat">Score: {score}</div>
-        <div className="stat">Time: {timeElapsed}/{trainingDuration}s</div>
-        <div className="stat">Accuracy: {accuracy}%</div>
+        <div className="stat">Progress: {hits}/16</div>
+        <div className="stat">Next: {nextNumber}</div>
+        <div className="stat">Time: {elapsedTime}s</div>
       </div>
 
-      <div className="grid-container" ref={gridRef}>
-        <div className="grid">
-          {gridTargets.map((target, idx) => {
-            const isNextTarget = idx === nextTargetIndex && !target.hit
-            return (
+      <div className="game-area" ref={gridRef}>
+        {gameState === 'countdown' && (
+          <div className="countdown-overlay">
+            <div className="countdown-number">{countdownValue > 0 ? countdownValue : 'GO!'}</div>
+          </div>
+        )}
+
+        <div className="grid-container">
+          <div className="grid">
+            {Array.from({ length: 16 }).map((_, i) => (
               <div
-                key={target.id}
-                className={`grid-cell ${
-                  target.hit ? 'hit' : isNextTarget ? 'next' : ''
-                }`}
-                onClick={() => handleTargetClick(target.id)}
+                key={i}
+                className={`grid-cell ${hits > i ? 'hit' : ''} ${nextNumber === i + 1 ? 'next' : ''}`}
+                onClick={() => handleCellClick(i + 1)}
               >
-                <div className="cell-number">{idx + 1}</div>
-                {isNextTarget && <div className="pulse-ring"></div>}
+                {!hits || i >= hits ? <span className="cell-number">{i + 1}</span> : null}
+                {hits > i && <div className="pulse-ring"></div>}
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </div>
 
-      <p className="instruction">Click targets in order from 1 to {totalTargets}!</p>
+      <div className="instruction">
+        Click targets in sequence from 1 to 16
+      </div>
     </div>
   )
 }

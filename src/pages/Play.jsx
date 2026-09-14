@@ -1,103 +1,51 @@
 import { useState } from 'react'
-import '../styles/pages/Play.css'
 import ReactionGame from '../games/ReactionGame'
 import PrecisionGame from '../games/PrecisionGame'
 import SpeedGame from '../games/SpeedGame'
 import GridshotGame from '../games/GridshotGame'
+import '../styles/pages/Play.css'
 
-function Play({ settings, setCurrentPage }) {
+const Play = () => {
   const [selectedMode, setSelectedMode] = useState(null)
-  const [gameResults, setGameResults] = useState(null)
-
-  const gameModes = [
-    {
-      id: 'reaction',
-      name: 'REACTION',
-      description: 'Click targets as fast as possible',
-      icon: '⚡',
-      color: '#ff6b6b'
-    },
-    {
-      id: 'precision',
-      name: 'PRECISION',
-      description: 'Improve your accuracy',
-      icon: '🎯',
-      color: '#4ecdc4'
-    },
-    {
-      id: 'speed',
-      name: 'SPEED',
-      description: '30 seconds - Score as many hits as possible',
-      icon: '🚀',
-      color: '#45b7d1'
-    },
-    {
-      id: 'gridshot',
-      name: 'GRIDSHOT',
-      description: 'Hit all targets in the grid',
-      icon: '📈',
-      color: '#a78bfa'
-    }
-  ]
-
-  if (gameResults) {
-    return (
-      <div className="play-page">
-        <div className="results-container">
-          <h1>SESSION COMPLETE</h1>
-          <div className="results-content">
-            {gameResults}
-            <button className="btn btn-primary" onClick={() => {
-              setGameResults(null)
-              setSelectedMode(null)
-            }}>
-              BACK TO MODES
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   if (selectedMode) {
     const GameComponent = {
       reaction: ReactionGame,
       precision: PrecisionGame,
       speed: SpeedGame,
-      gridshot: GridshotGame
+      gridshot: GridshotGame,
     }[selectedMode]
 
-    return (
-      <div className="play-page">
-        <GameComponent
-          settings={settings}
-          onGameEnd={(results) => setGameResults(results)}
-          onExit={() => setSelectedMode(null)}
-        />
-      </div>
-    )
+    return <GameComponent onExit={() => setSelectedMode(null)} />
   }
 
   return (
     <div className="play-page">
       <div className="mode-selector">
-        <h1>SELECT TRAINING MODE</h1>
+        <h1>SELECT GAME MODE</h1>
         <p className="mode-subtitle">Choose your training challenge</p>
+
         <div className="modes-grid">
-          {gameModes.map((mode) => (
-            <div
-              key={mode.id}
-              className="mode-card"
-              style={{ borderColor: mode.color }}
-              onClick={() => setSelectedMode(mode.id)}
-            >
-              <div className="mode-icon" style={{ color: mode.color }}>
-                {mode.icon}
-              </div>
-              <h3>{mode.name}</h3>
-              <p>{mode.description}</p>
-            </div>
-          ))}
+          <div className="mode-card" onClick={() => setSelectedMode('reaction')}>
+            <span className="mode-icon">⚡</span>
+            <h3>REACTION TEST</h3>
+            <p>Test your reflexes. Click on targets as fast as you can.</p>
+          </div>
+          <div className="mode-card" onClick={() => setSelectedMode('precision')}>
+            <span className="mode-icon">🎯</span>
+            <h3>PRECISION</h3>
+            <p>Improve accuracy. Click targets with high precision.</p>
+          </div>
+          <div className="mode-card" onClick={() => setSelectedMode('speed')}>
+            <span className="mode-icon">🚀</span>
+            <h3>SPEED CHALLENGE</h3>
+            <p>Beat the clock. Click as many targets as possible in 30s.</p>
+          </div>
+          <div className="mode-card" onClick={() => setSelectedMode('gridshot')}>
+            <span className="mode-icon">📊</span>
+            <h3>GRIDSHOT</h3>
+            <p>Master patterns. Click targets in the correct order on a grid.</p>
+          </div>
         </div>
       </div>
     </div>

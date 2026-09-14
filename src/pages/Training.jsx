@@ -1,124 +1,96 @@
-import { useState } from 'react'
 import '../styles/pages/Training.css'
 
-function Training({ settings, setCurrentPage }) {
-  const [activeTab, setActiveTab] = useState('recommendations')
-
+const Training = () => {
   return (
     <div className="training-page">
       <div className="training-container">
         <h1>TRAINING GUIDE</h1>
-        <p className="page-subtitle">Improve your aim systematically</p>
 
         <div className="training-tabs">
-          <button
-            className={`tab-btn ${activeTab === 'recommendations' ? 'active' : ''}`}
-            onClick={() => setActiveTab('recommendations')}
-          >
-            📋 RECOMMENDATIONS
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'tips' ? 'active' : ''}`}
-            onClick={() => setActiveTab('tips')}
-          >
-            💡 TIPS
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'progression' ? 'active' : ''}`}
-            onClick={() => setActiveTab('progression')}
-          >
-            📈 PROGRESSION
-          </button>
+          <button className="tab-btn active">ROUTINE</button>
+          <button className="tab-btn">TIPS</button>
+          <button className="tab-btn">PROGRESSION</button>
         </div>
 
-        {activeTab === 'recommendations' && (
-          <div className="tab-content">
-            <div className="training-card">
-              <h3>📋 Daily Training Routine</h3>
-              <div className="routine-item">
-                <h4>Warm Up (5 min)</h4>
-                <p>Start with Reaction mode to activate your reflexes</p>
-              </div>
-              <div className="routine-item">
-                <h4>Precision Training (10 min)</h4>
-                <p>Practice accuracy with Precision mode</p>
-              </div>
-              <div className="routine-item">
-                <h4>Speed Challenge (5 min)</h4>
-                <p>Push your limits with Speed mode</p>
-              </div>
-              <div className="routine-item">
-                <h4>Complex Patterns (10 min)</h4>
-                <p>Master gridshot for advanced aiming</p>
-              </div>
+        <div className="tab-content">
+          <div className="training-card">
+            <h3>DAILY ROUTINE</h3>
+            <div className="routine-item">
+              <h4>Warm Up (5 min)</h4>
+              <p>Start with Reaction Test to warm up your reflexes</p>
+            </div>
+            <div className="routine-item">
+              <h4>Precision Training (10 min)</h4>
+              <p>Focus on accuracy with the Precision game mode</p>
+            </div>
+            <div className="routine-item">
+              <h4>Speed Challenge (5 min)</h4>
+              <p>Test your speed and reaction time combined</p>
+            </div>
+            <div className="routine-item">
+              <h4>Gridshot Practice (10 min)</h4>
+              <p>Master complex patterns and sequential clicking</p>
             </div>
           </div>
-        )}
 
-        {activeTab === 'tips' && (
-          <div className="tab-content">
+          <div className="training-card">
+            <h3>PRO TIPS</h3>
             <div className="tips-grid">
               <div className="tip-card">
-                <h3>🎯 Focus</h3>
-                <p>Stay concentrated on the targets. Eliminate distractions and maintain steady focus throughout your session.</p>
+                <h3>Ergonomics</h3>
+                <p>Maintain proper posture and keep your arm relaxed for better control</p>
               </div>
               <div className="tip-card">
-                <h3>🖱️ Mouse Control</h3>
-                <p>Use consistent mouse sensitivity. Find the sweet spot that allows both speed and precision.</p>
+                <h3>Mouse Settings</h3>
+                <p>Use consistent mouse sensitivity across all games for muscle memory</p>
               </div>
               <div className="tip-card">
-                <h3>⚡ Reaction Speed</h3>
-                <p>React instantly to target appearances. Reduce decision time and let muscle memory take over.</p>
+                <h3>Training Schedule</h3>
+                <p>Train regularly (daily) for best results. Consistency beats intensity</p>
               </div>
               <div className="tip-card">
-                <h3>📊 Consistency</h3>
-                <p>Train regularly to build muscle memory. Consistency trumps intensity in skill development.</p>
-              </div>
-              <div className="tip-card">
-                <h3>🎵 Environment</h3>
-                <p>Train in a quiet, well-lit environment. Good lighting and minimal distractions improve performance.</p>
-              </div>
-              <div className="tip-card">
-                <h3>🧘 Posture</h3>
-                <p>Maintain good posture and arm position. This reduces fatigue and improves accuracy over time.</p>
+                <h3>Breaks</h3>
+                <p>Take short breaks to maintain focus and prevent fatigue</p>
               </div>
             </div>
           </div>
-        )}
 
-        {activeTab === 'progression' && (
-          <div className="tab-content">
+          <div className="training-card">
+            <h3>PROGRESSION LEVELS</h3>
             <div className="progression-stages">
               <div className="stage">
                 <div className="stage-badge">BEGINNER</div>
-                <h3>Foundation (Week 1-2)</h3>
+                <h3>Level 1: Foundation</h3>
                 <ul>
-                  <li>Focus on Reaction mode to build reflexes</li>
-                  <li>Train 15-20 minutes daily</li>
-                  <li>Target average reaction: 250-300ms</li>
+                  <li>Complete 10 Reaction Test sessions</li>
+                  <li>Achieve 80%+ accuracy in Precision</li>
+                  <li>Click 20+ targets in Speed Challenge</li>
+                  <li>Complete Gridshot in under 60 seconds</li>
                 </ul>
               </div>
               <div className="stage">
                 <div className="stage-badge">INTERMEDIATE</div>
-                <h3>Development (Week 3-6)</h3>
+                <h3>Level 2: Development</h3>
                 <ul>
-                  <li>Mix Precision and Speed modes</li>
-                  <li>Train 30-40 minutes daily</li>
-                  <li>Target average reaction: 150-200ms</li>
+                  <li>Average reaction time below 250ms</li>
+                  <li>Achieve 90%+ accuracy in Precision</li>
+                  <li>Click 35+ targets in Speed Challenge</li>
+                  <li>Complete Gridshot in under 40 seconds</li>
                 </ul>
               </div>
               <div className="stage">
                 <div className="stage-badge">ADVANCED</div>
-                <h3>Mastery (Week 7+)</h3>
+                <h3>Level 3: Mastery</h3>
                 <ul>
-                  <li>Focus on Gridshot and all modes</li>
-                  <li>Train 45-60 minutes daily</li>
-                  <li>Target average reaction: &lt;150ms</li>
+                  <li>Average reaction time below 200ms</li>
+                  <li>Achieve 95%+ accuracy in Precision</li>
+                  <li>Click 50+ targets in Speed Challenge</li>
+                  <li>Complete Gridshot in under 25 seconds</li>
                 </ul>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

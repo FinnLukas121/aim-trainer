@@ -1,43 +1,41 @@
-import { useState, useEffect } from 'react'
-import './styles/App.css'
+import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Home from './pages/Home'
 import Play from './pages/Play'
 import Training from './pages/Training'
 import Stats from './pages/Stats'
 import Settings from './pages/Settings'
+import './styles/App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
-  const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem('aimTrainerSettings')
-    return saved ? JSON.parse(saved) : {
-      trainingDuration: 30,
-      targetSize: 30,
-      targetSpeed: 1,
-      soundEnabled: true,
-      musicEnabled: false,
-      theme: 'dark'
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'play':
+        return <Play />
+      case 'training':
+        return <Training />
+      case 'stats':
+        return <Stats />
+      case 'settings':
+        return <Settings />
+      default:
+        return <Home />
     }
-  })
-
-  useEffect(() => {
-    localStorage.setItem('aimTrainerSettings', JSON.stringify(settings))
-  }, [settings])
-
-  const updateSettings = (newSettings) => {
-    setSettings({ ...settings, ...newSettings })
   }
 
   return (
     <div className="app">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Sidebar 
+        currentPage={currentPage} 
+        onNavigate={setCurrentPage}
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
       <main className="main-content">
-        {currentPage === 'home' && <Home setCurrentPage={setCurrentPage} />}
-        {currentPage === 'play' && <Play settings={settings} setCurrentPage={setCurrentPage} />}
-        {currentPage === 'training' && <Training settings={settings} setCurrentPage={setCurrentPage} />}
-        {currentPage === 'stats' && <Stats />}
-        {currentPage === 'settings' && <Settings settings={settings} updateSettings={updateSettings} />}
+        {renderPage()}
       </main>
     </div>
   )
