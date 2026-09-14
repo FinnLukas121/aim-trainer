@@ -1,0 +1,82 @@
+.speed-game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  position: relative;
+}
+
+.speed-game .game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: rgba(69, 183, 209, 0.1);
+  border-bottom: 2px solid rgba(69, 183, 209, 0.2);
+}
+
+.speed-game .game-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #45b7d1;
+  letter-spacing: 2px;
+}
+
+.speed-game .exit-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.speed-game .game-stats {
+  display: flex;
+  gap: 30px;
+  padding: 20px 30px;
+  background: rgba(69, 183, 209, 0.05);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.speed-game .stat.timer {
+  font-size: 24px;
+  font-weight: 900;
+  color: #45b7d1;
+}
+
+.speed-game .game-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(69, 183, 209, 0.05) 0%, transparent 70%);
+  cursor: crosshair;
+}
+
+.speed-target {
+  background: radial-gradient(circle, #45b7d1 0%, #2a8aa0 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(69, 183, 209, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.speed-target:hover {
+  box-shadow: 0 0 35px rgba(69, 183, 209, 0.8), inset 0 0 18px rgba(255, 255, 255, 0.3);
+  transform: scale(1.15);
+}
+
+.speed-game .instruction {
+  padding: 20px 30px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  background: rgba(69, 183, 209, 0.05);
+}

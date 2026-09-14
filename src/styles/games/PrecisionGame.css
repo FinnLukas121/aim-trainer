@@ -1,0 +1,92 @@
+.precision-game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  position: relative;
+}
+
+.precision-game .game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: rgba(76, 205, 196, 0.1);
+  border-bottom: 2px solid rgba(76, 205, 196, 0.2);
+}
+
+.precision-game .game-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4ecdc4;
+  letter-spacing: 2px;
+}
+
+.precision-game .exit-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.precision-game .exit-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+}
+
+.precision-game .game-stats {
+  display: flex;
+  gap: 30px;
+  padding: 20px 30px;
+  background: rgba(76, 205, 196, 0.05);
+  flex-wrap: wrap;
+}
+
+.precision-game .game-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(76, 205, 196, 0.05) 0%, transparent 70%);
+  cursor: crosshair;
+}
+
+.precision-target {
+  background: radial-gradient(circle, #4ecdc4 0%, #3da9a1 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(78, 205, 196, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.precision-target:hover {
+  box-shadow: 0 0 35px rgba(78, 205, 196, 0.7), inset 0 0 18px rgba(255, 255, 255, 0.3);
+  transform: scale(1.15);
+}
+
+.target-inner {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  top: 30%;
+  left: 30%;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.precision-game .instruction {
+  padding: 20px 30px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  background: rgba(76, 205, 196, 0.05);
+}

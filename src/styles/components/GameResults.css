@@ -1,0 +1,139 @@
+.game-results {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  padding: 40px 20px;
+}
+
+.results-container {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 16px;
+  padding: 50px 40px;
+  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.results-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 16px;
+  color: #e5e7eb;
+  letter-spacing: 2px;
+}
+
+.mode-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.results-score {
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 30px;
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 12px;
+}
+
+.score-display {
+  font-size: 72px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.score-label {
+  font-size: 14px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #6366f1;
+}
+
+.result-label {
+  font-size: 13px;
+  color: #9ca3af;
+  letter-spacing: 0.5px;
+}
+
+.result-value {
+  font-size: 20px;
+  font-weight: 900;
+  color: #6366f1;
+}
+
+.personal-best {
+  text-align: center;
+  padding: 20px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 2px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.personal-best p {
+  font-size: 14px;
+  color: #86efac;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.results-actions {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.results-actions .btn {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 14px;
+  justify-content: center;
+}
