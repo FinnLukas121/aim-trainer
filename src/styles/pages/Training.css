@@ -1,0 +1,188 @@
+.training-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+.training-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.training-page h1 {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+.training-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: #e5e7eb;
+}
+
+.tab-btn.active {
+  color: #6366f1;
+  border-bottom-color: #6366f1;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease;
+  padding: 30px 0;
+}
+
+.training-card {
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.training-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #e5e7eb;
+  letter-spacing: 1px;
+}
+
+.routine-item {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.routine-item:last-child {
+  border-bottom: none;
+}
+
+.routine-item h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6366f1;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.routine-item p {
+  font-size: 14px;
+  color: #d1d5db;
+  line-height: 1.5;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.tip-card {
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.15);
+  transform: translateY(-4px);
+}
+
+.tip-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #e5e7eb;
+}
+
+.tip-card p {
+  font-size: 13px;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+.progression-stages {
+  display: grid;
+  gap: 24px;
+}
+
+.stage {
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 12px;
+  padding: 28px;
+  position: relative;
+}
+
+.stage-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.stage h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #e5e7eb;
+}
+
+.stage ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stage li {
+  font-size: 14px;
+  color: #d1d5db;
+  padding-left: 24px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.stage li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #6366f1;
+  font-weight: bold;
+}
