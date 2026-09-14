@@ -94,21 +94,6 @@
   line-height: 1.6;
 }
 
-.home-buttons {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-bottom: 80px;
-  flex-wrap: wrap;
-  animation: fadeIn 0.8s ease 0.4s both;
-}
-
-.home-buttons .btn {
-  min-width: 220px;
-  padding: 16px 32px;
-  font-size: 15px;
-}
-
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
